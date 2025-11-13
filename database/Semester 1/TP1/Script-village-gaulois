@@ -1,0 +1,47 @@
+CREATE SCHEMA bd_alex;
+SET search_path = bd_alex;
+
+-- HUTTE
+CREATE TABLE hutte (
+    nom_hutte VARCHAR(45) PRIMARY KEY NOT NULL,
+    surface REAL NOT NULL,
+    annee NUMERIC(4,0) DEFAULT NULL,
+    hauteur REAL DEFAULT NULL
+);
+
+-- SPECIALITE
+CREATE TABLE specialite (
+    nom_spe VARCHAR(50) PRIMARY KEY NOT NULL
+);
+
+-- HABITANT (FK to hutte mandatory, to specialite optional)
+CREATE TABLE habitant (
+    nom_hab VARCHAR(15) PRIMARY KEY NOT NULL,
+    date_nais DATE NOT NULL,
+    sexe CHAR(1) NOT NULL DEFAULT 'M',
+    nom_hutte VARCHAR(45) NOT NULL,
+    nom_spe VARCHAR(50) DEFAULT NULL,  -- Nullable for 0..1 association
+    CONSTRAINT fk_hab_hut FOREIGN KEY (nom_hutte) REFERENCES hutte (nom_hutte),
+    CONSTRAINT fk_hab_spe FOREIGN KEY (nom_spe) REFERENCES specialite (nom_spe),
+    CONSTRAINT chk_sexe_length CHECK (LENGTH(sexe) = 1)
+);
+
+-- POTION
+CREATE TABLE potion (
+    nom_potion VARCHAR(15) PRIMARY KEY NOT NULL,
+    effet VARCHAR(30) NOT NULL,
+    duree INTEGER DEFAULT 2,
+    intervalle NUMERIC(7,3) DEFAULT 3,
+    CONSTRAINT chk_duree CHECK (duree >= 0 AND duree <= 120)
+);
+
+-- PRISE (many-to-many junction)
+CREATE TABLE prise (
+    nom_hab VARCHAR(15) NOT NULL,
+    nom_potion VARCHAR(15) NOT NULL,
+    date DATE NOT NULL,
+    qte INTEGER NOT NULL DEFAULT 1,
+    PRIMARY KEY (nom_hab, nom_potion, date),
+    CONSTRAINT fk_prise_hab FOREIGN KEY (nom_hab) REFERENCES habitant (nom_hab),
+    CONSTRAINT fk_prise_potion FOREIGN KEY (nom_potion) REFERENCES potion (nom_potion)
+);

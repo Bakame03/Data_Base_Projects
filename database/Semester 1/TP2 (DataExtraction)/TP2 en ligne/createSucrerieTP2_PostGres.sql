@@ -1,10 +1,10 @@
 --  ==============================================================*/
 --   Nom de SGBD :  PostgreSQL 7.3                                */
---   Date de cr�ation :  13/11/2008 12:49:30                      */
+--   Date de cr�ation :  13/11/2008 12:49:30                      */
 --  ==============================================================*/
 
 -- ==============================================================*/                      */
---  Date de cr�ation :  06/11/2008 13:32:50                      */
+--  Date de cr�ation :  06/11/2008 13:32:50                      */
 -- ==============================================================*/
 
 create schema sucrerie;
@@ -255,3 +255,138 @@ INSERT INTO lignes_commande (NUMCMDE, NUMLIGNE, REF, QTDEMANDE) VALUES(10192, 7,
 INSERT INTO lignes_commande (NUMCMDE, NUMLIGNE, REF, QTDEMANDE) VALUES(10192, 8, '4052', 1);
 INSERT INTO lignes_commande (NUMCMDE, NUMLIGNE, REF, QTDEMANDE) VALUES(10192, 9, '3004', 1);
 INSERT INTO lignes_commande (NUMCMDE, NUMLIGNE, REF, QTDEMANDE) VALUES(10192, 10, '4019', 1);
+
+
+
+
+-- écrire les requêtes permettant de réaliser les listes ou opérations qui suivent.
+-- Vous ferez en sorte de nommer correctement les colonnes de résultat dés lors que l'utilisation d'une fonction
+-- d'agrégat s'impose (et elle s'impose! )
+
+-- 1. Les clients (nom, adresse, téléphone) dont la deuxième lettre du nom est A, la quatrième I et la
+-- cinquième N.
+SELECT NOMCLIENT, ADRCLIENT, TELCLIENT
+FROM CLIENTS
+WHERE NOMCLIENT LIKE '_A_IN%';
+
+-- 2. Les numéros des commandes passées par Mme RABIN*.
+SELECT NUMCMDE
+FROM COMMANDES C
+JOIN CLIENTS CL ON C.CODECLIENT = CL.CODECLIENT
+WHERE CL.NOMCLIENT = 'RABIN';
+
+-- 3. La liste des articles (Désignation) achetés par Mme RABIN*.
+SELECT P.DESIGNATION
+FROM LIGNES_COMMANDE LC
+JOIN COMMANDES C ON LC.NUMCMDE = C.NUMCMDE
+JOIN CLIENTS CL ON C.CODECLIENT = CL.CODECLIENT
+JOIN PRODUITS P ON LC.REF = P.REF
+WHERE CL.NOMCLIENT = 'RABIN';
+
+-- 4. Montant total HT de toutes les commandes de Mme RABIN*.
+SELECT SUM(C.TOTHT) AS MONTANT_TOTAL_HT
+FROM COMMANDES C
+JOIN CLIENTS CL ON C.CODECLIENT = CL.CODECLIENT
+WHERE CL.NOMCLIENT = 'RABIN';
+
+-- 5. Montant total HT de toutes les commandes de Mme RABIN* hors transport (le prix hors transport est la
+-- somme des qtdemande x puht des articles achetés).
+SELECT SUM(LC.QTDEMANDE * P.PUHT) AS MONTANT_TOTAL_HT_HORS_TRANSPORT
+FROM LIGNES_COMMANDE LC
+JOIN COMMANDES C ON LC.NUMCMDE = C.NUMCMDE
+JOIN CLIENTS CL ON C.CODECLIENT = CL.CODECLIENT
+JOIN PRODUITS P ON LC.REF = P.REF
+WHERE CL.NOMCLIENT = 'RABIN';
+
+-- 6. Chiffre d'affaires(TTC) total pour le mois d'octobre 98. Le Chiffre d'affaire est la somme des montants
+-- ht + les montants TVA.
+SELECT SUM(C.TOTHT + C.TOTTVA) AS CHIFFRE_AFFAIRE_TOTAL_OCTOBRE_98
+FROM COMMANDES C
+WHERE C.DATECMDE >= '1998-10-01' AND C.DATECMDE < '1998-11-01';
+
+-- 7. Chiffre d'affaires(TTC) du vendeur BAUDOT Marc pour le mois d'octobre 98 (une seule colonne
+-- nommée "CA Baudot Marc").
+SELECT SUM(C.TOTHT + C.TOTTVA) AS "CA Baudot Marc"
+FROM COMMANDES C
+JOIN VENDEURS V ON C.CODEVENDEUR = V.CODEVENDEUR
+WHERE V.NOMVENDEUR = 'BAUDOT' AND V.PREVENDEUR = 'Marc'
+  AND C.DATECMDE >= '1998-10-01' AND C.DATECMDE < '1998-11-01';
+
+-- Vous travaillez dans le cadre d‘un commerce de sucrerie (ce qui vous demande une grande volonté afin de ne pas
+-- entamer les stocks !). Il existe une base contenant des tables dont les descriptions suivent.
+-- Les articles sont vendus en conditionnement d'un poids défini (par exemple 500 grammes) ou en
+-- conditionnement contenant un certain nombre de pièces (exemple : sachet de 40 carambars).
+-- Le champ 'Qte' de la table Produit, contient soit le poids (en gramme) du conditionnement, soit le nombre
+-- d'unités par sachet.
+-- Pour distinguer les types de conditionnement on indique, dans le champ 'Descriptif' de la table Produit, G
+-- (Gramme) pour un conditionnement au poids ou P (Pièce) pour un conditionnement en sachet.
+-- Si cette valeur vaut P, on renseigne la colonne 'Poidspiece' de la table Produit avec le poids d'une unité (par
+-- exemple 15g le CARANOUGA). Dans l'autre cas, on renseigne le 'Poidspiece' à la valeur 0.
+
+-- Le Montant HT (totHT) des commandes inclut le transport,
+-- pour connaître le montant HT hors transport il faut le calculer à partir des quantités demandées et du prix
+-- unitaire HT du produit
+
+-- Remarque :
+-- • La Quantité demandée (QtDemande de la table lignes_commandes) correspond à la
+-- quantité commandée par le client.
+-- • Le total HT (TotHt) correspond au montant hors taxe de la commande
+-- • Le total TVA (TotTVA) correspond au montant de la TVA de la commande
+-- • Pour calculer le montant TTC d'une commande : TotHt+TotTVA
+
+-- 8. Désignation, prix au kilogramme, prix du sachet et poids du sachet de chaque article conditionné par
+-- sachet, classé du moins coûteux au plus coûteux sur le prix au kilogramme.
+-- SELECT DESIGNATION,
+--        PUHT * (1000.0 / QTE) AS PRIX_AU_KILOGRAMME,
+--        PUHT AS PRIX_DU_SACHET,
+--        QTE * POIDSPIECE AS POIDS_DU_SACHET
+-- FROM PRODUITS
+-- WHERE DESCRIPTIF = 'P' 
+-- ORDER BY PRIX_AU_KILOGRAMME ASC; 
+
+-- 9. Donner la désignation et le poids des conditionnements de chaque produit
+-- Utiliser la fonction
+-- CASE WHEN condition THEN valeur si vrai ELSE valeur si faux
+-- END
+-- Exemple : afficher si elle plus de 50 unités en stock ou non
+-- SELECT designation, CASE WHEN stock>50
+-- THEN 'plus que 50 en stock'
+-- ELSE 'moins de 50 en stock'
+-- END as "restant"
+-- FROM produits
+-- SELECT DESIGNATION,
+--        CASE WHEN DESCRIPTIF = 'G' THEN QTE || ' grammes'
+--             ELSE (QTE * POIDSPIECE) || ' grammes'
+--        END AS POIDS_DU_CONDITIONNEMENT
+-- FROM PRODUITS;
+
+-- 10. Calculer le poids total du stock en kilogramme.
+-- Le poids dépend du conditionnement donc la fonction case when …. est utile, elle peut se placer
+-- n'importe dans la requête, dans une fonction d'agrégat par exemple
+SELECT SUM(
+           CASE WHEN DESCRIPTIF = 'G' THEN QTE * STOCK / 1000.0
+                ELSE QTE * POIDSPIECE * STOCK / 1000.0
+           END
+       ) AS POIDS_TOTAL_DU_STOCK_KG
+FROM PRODUITS;
+
+-- 11. calculer le prix total du stock
+SELECT SUM(PUHT * STOCK) AS PRIX_TOTAL_DU_STOCK
+FROM PRODUITS;
+
+-- 12. calculer le poids total du stock, le prix total du stock et le prix au kilo du stock
+SELECT 
+    SUM(
+        CASE WHEN DESCRIPTIF = 'G' THEN QTE * STOCK / 1000.0
+             ELSE QTE * POIDSPIECE * STOCK / 1000.0
+        END
+    ) AS POIDS_TOTAL_DU_STOCK_KG,
+    SUM(PUHT * STOCK) AS PRIX_TOTAL_DU_STOCK,
+    SUM(PUHT * STOCK) / NULLIF(SUM(
+        CASE WHEN DESCRIPTIF = 'G' THEN QTE * STOCK / 1000.0
+             ELSE QTE * POIDSPIECE * STOCK / 1000.0
+        END
+    ), 0) AS PRIX_AU_KILO_DU_STOCK
+FROM PRODUITS;
+
+

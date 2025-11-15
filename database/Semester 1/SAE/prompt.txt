@@ -1,0 +1,237 @@
+great so here is the topic
+
+topic -> :
+
+le sujet est qu'il s'agit d'un projet that i am working on for a company right now
+
+here are all details you need to know:
+
+- so the name of the company i got the job in, is titled "Matski"
+
+- and my job is about to enhance their data base management
+
+
+so before i tell you what i am expecting from you let me tell you a bit about the company
+
+here is the context area the company is operating on:
+
+(-) Matski est dans la revente de materiels de ski et de materiels de montagne
+(-) elle a ete created en 1984 sous l'impulsion de trois entrepreneurs a Annecy(Haute savoie)
+(-) Matski propose trois de produits: 1. les articles pour les skieurs alpins et les skieurs de montagnes
+                                      2. les accessoires pour les skieurs alpins et les skieurs de montagnes
+                                      3. les luges en bois et en plastiques
+
+(-) depuis 2010 Matski possede : - un logiciel pour la gestion commercial (ce logiciel est juste pour les gens qui travaillent a Matski ca leur permet de gerer les 
+                                                                           achats chez Matski, en gros c'est comme un BackOffice)
+                                 - un site web B2B(c'est un site web externe qui est utiliser par les clients donc les utilisateurs finaux qui veulent
+                                    commander online en gros c'est comme un FrontOffice)
+
+
+so now here are the wrap up of all the tasks i have been asked to enhance:
+- the main goal is the exploiter bien les donnees existants
+- propose a good and scalable systeme de gestion des achats
+- une extension de leur base de donnees(pour une gestion complete)
+
+so now before i tell you my questions and share with you my toughts i would like first to share with you they existing data base structure
+so here are their data base structure and how they use to keep things in stock:
+so first here is the structure on their store:
+i want you to think of this like an etagere:
+A='Articles'
+
+and inside A='Articles' we have:
+B1='Materiel ski Alpin' & B2='Materiel de snowboard' & B3='Materiel ski nordique' & B4='Materiel de montagne'
+
+and inside B1='Materiel ski Alpin' we have:
+C1='Chaussures' & C2='Batons' & C3='skis'
+and inside C3='skis' we have:
+D1='Polyvalent' & D2='Freestyle' & D3='Racing' & D4='Freeride' & D5='Randonnee'
+
+and inside B2='Materiel de snowboard' we have:
+C4='Chaussures' & C5='snowboards'
+and inside C5='snowboards' we have:
+D6='Polyvalent' & D7='Freestyle' & D8='Alpine' & D9='Freeride'
+
+and inside B3='Materiel ski nordique' we have:
+C6='Chaussures' & C7='Batons' & C8='skis'
+and inside C8='skis' we have:
+D10='skating' & D11='Alternatif'
+ 
+and inside B4='Materiel de montagne' we have:
+C9='Paret' & C10='Luge'
+
+
+so the previous structure is the one their CEO presented to me on paper.
+
+so after talking with the CEO i went to speak to the IT CTO coz it was the one who was in possesion of the 'Diagram de classe' of their actual database(i mean the actual database they use, built by the first programmer when they started the company).
+so here i will give you then full photo of the diagramme de classe of their actual database but here is a short explaination of their actual database:
+
+here are all the tables of their database:
+- categorie
+- article
+- tarifvente
+- listeprix
+- client
+- etiquette
+- commande
+- detailcommande
+- type article
+
+here is the explaination on how their tables are connected:
+- categorie to categorie via la liaison called 'Appartenir' (0,*.....0,1):
+in one categorie we can find 0 or many categories.......one categorie appartient in 0 or 1 categorie
+
+- categorie to article via la liaison called 'fait parti' (1,1.....1,*):
+in one categorie we can find 1 or many article.......one article fait parti de 1 and only 1 categorie
+
+- typearticle to article via la liaison called 'Est de' (1,1.....0,*):
+in one typearticle we can find 0 or many article.......one article estde 1 and only 1 typearticle
+
+- commande to client via la liaison called 'concerner' (0,*.....1,1):
+one client can have 0 or many commande.......one commande concerne 1 and only 1 client
+
+- listeprix to client via la liaison called 'disposer' (0,*.....1,1):(iHave understand the listeprix as something unique that the client gets when he buy a product)
+in one listeprix we can have 0 or many client with the same listeprix.......one client Dispose(r) 1 and only 1 listeprix
+
+- etiquette to client via la liaison called 'regrouper' (0,*.....1,1):
+one etiquette can have 0 or many client.......one client est regrouper in 1 and only 1 etiquette
+
+- this one connects three tables(article, commande and detailcommande): because we had 0,*....0,* we created that third table named detailcommande:
+one commande can have 0 or many article........one article can be connected to 0 or many commande
+
+- this one connects three tables(article, listeprix and tarifvente): because we had 0,*....0,* we created that third table named tarifvente:
+one listeprix can have 0 or many article........one article can be connected to 0 or many listeprix
+
+
+
+so that was the diagram de classe logique they ude on their actual databasestructure
+so i will also share with you in the attached files the "Le modèle physique de données"
+
+
+so now here are the tasks they gave me at that company:
+- to create a new diagram the classe wich is scalable and good and full for their management
+- to tell them the flaws they had on their old diagram de classe structure and on their old data base structure, and tell solutions to the flaws/issues in that new diagram de classe i will give them
+
+so here is how i want us to walk:
+- i will give you my thoughts on how i would corect their data base structure and their diagram de class structure
+- and in return your will give me your point of view on how i get to manage the tasks asked if i am wrong or not, if i got well the point or not, and also after that i will need your own point of you on how you would had managed it and if we can put further tables or not
+
+
+
+1 -> so here is my point of view on their data base structure:
+- their data base was quit good expect one thing they missed to add on their 
+and inside B4='Materiel de montagne' we have:
+C9='Paret' & C10='Luge'
+
+it should be 
+and inside B4='Materiel de montagne' we have:
+C9='Paret' & C10='Luge'
+and inside C10='Luge' we have:
+D12='Bois' & D13='Plastique'
+
+they forget Bois and Plastique coz in the introduction they told me that
+Matski propose trois de produits
+(3. les luges en bois et en plastiques)
+
+2 -> so here is my point of view on their diagramme de classe:
+- they should have add the further table named fournisseur(becuase in introduction they said ther are based in revente de materiels donc forcememnt il y des gens qui leur fournissent ces articles pour qu'ils puissent les revendre):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -103,7 +103,7 @@ one listeprix can have 0 or many article........one article can be connected to 
 
 
 
-so that was the diagram de classe logique they ude on their actual databasestructure
+so that was the diagram de classe logique they use on their actual databasestructure
 so i will also share with you in the attached files the "Le modèle physique de données"
 
 
@@ -133,7 +133,70 @@ Matski propose trois de produits
 (3. les luges en bois et en plastiques)
 
 2 -> so here is my point of view on their diagramme de classe:
-- they should have add the further table named fournisseur(becuase in introduction they said ther are based in revente de materiels donc forcememnt il y des gens qui leur fournissent ces articles pour qu'ils puissent les revendre):
+2.1 they should have add the further table named fournisseur(becuase in introduction they said ther are based in la revente de materiels donc forcememnt il y des gens qui leur fournissent ces articles pour qu'ils puissent les revendre):
+- fournisseur to article via la liaison called 'fournir' (1,1.....1,*):
+one fournisseur can fournir 1 or many article.......one article is fourni by 1 and only 1 fournisseur
+
+2.2 on this point:
+- this one connects three tables(article, listeprix and tarifvente): because we had 0,*....0,* we created that third table named tarifvente:
+one listeprix can have 0 or many article........one article can be connected to 0 or many listeprix
+
+according to my understanding a listeprix is something connected to the price of the article
+and i will say one article can have 0 or many prices(deepending on the season).........and one price can have zero or many article which are at the same price
+
+so it should be 1,*...1,*:
+- this one connects three tables(article, listeprix and tarifvente): because we had 1,*....1,* we created that third table named tarifvente:
+one listeprix can have 0 or many article........one article can be connected to 0 or many listeprix
+
+2.3 on this point:	
+- listeprix to client via la liaison called 'disposer' (0,*.....1,1):(iHave understand the listeprix as something unique that the client gets when he buy a product)
+in one listeprix we can have 0 or many client with the same listeprix.......one client Dispose(r) 1 and only 1 listeprix
+
+according to my understanding a listeprix is something connected to the price of the article
+and i will say the client can buy many artcles
+
+so it should be 1,*...0,*:
+- listeprix to client via la liaison called 'disposer' (0,*.....1,*):(iHave understand the listeprix as something unique that the client gets when he buy a product)
+in one listeprix we can have 0 or many client with the same listeprix.......one client Dispose(r) 1 or many listeprix
+
+2.4 on this point:	
+- listeprix to client via la liaison called 'disposer' (0,*.....1,1):(iHave understand the listeprix as something unique that the client gets when he buy a product)
+in one listeprix we can have 0 or many client with the same listeprix.......one client Dispose(r) 1 and only 1 listeprix
+
+according to my understanding a listeprix is something connected to the price of the article
+and i will say the client can buy many artcles
+
+so it should be 1,*...0,*:
+- listeprix to client via la liaison called 'disposer' (0,*.....1,*):(iHave understand the listeprix as something unique that the client gets when he buy a product)
+in one listeprix we can have 0 or many client with the same listeprix.......one client Dispose(r) 1 or many listeprix
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
 
 
 

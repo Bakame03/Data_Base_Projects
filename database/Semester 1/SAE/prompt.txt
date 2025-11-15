@@ -160,15 +160,22 @@ so it should be 1,*...0,*:
 in one listeprix we can have 0 or many client with the same listeprix.......one client Dispose(r) 1 or many listeprix
 
 2.4 on this point:	
-- listeprix to client via la liaison called 'disposer' (0,*.....1,1):(iHave understand the listeprix as something unique that the client gets when he buy a product)
-in one listeprix we can have 0 or many client with the same listeprix.......one client Dispose(r) 1 and only 1 listeprix
+- this one connects three tables(article, commande and detailcommande): because we had 0,*....0,* we created that third table named detailcommande:
+one commande can have 0 or many article........one article can be connected to 0 or many commande
 
-according to my understanding a listeprix is something connected to the price of the article
-and i will say the client can buy many artcles
+according to my understanding it should be 1,*...1,1 and we shoudn't have the third created from(0,*...0,*) coz we would have not be abliged to create the third and
+my logic is that one commande can be associated to 1 or mnay articles and......one article is connected to 0 or one and only one command
 
-so it should be 1,*...0,*:
-- listeprix to client via la liaison called 'disposer' (0,*.....1,*):(iHave understand the listeprix as something unique that the client gets when he buy a product)
-in one listeprix we can have 0 or many client with the same listeprix.......one client Dispose(r) 1 or many listeprix
+so it should be 1,*...1,1:
+- article to commande via the liason named 'contenir': 
+one commande can have 1 or many article........one article can be connected to 0 or 1 and only 1 commande
+
+
+
+so here are what i am epecting from you:
+- according to my point of view on their database structure and their diagramme de classe
+- what is your point of you on my point of you....am i wrong...am i get the point missing or not?
+- what is your point of you on all of this and what is your point of you on the diagramme the classe how sould we update it...what are your your suggestion
 
 
 
